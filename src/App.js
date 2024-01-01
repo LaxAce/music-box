@@ -19,7 +19,8 @@ const App = () => {
   useEffect(() => {
     if (range >= 5 && range <= 20) {
       setError(null);
-      fetch("https://random-words-api.vercel.app/word")
+
+      fetch("https://random-word-api.herokuapp.com/word")
         .then((res) => {
           if (!res.ok) throw Error("Unable to fetch data...");
           return res.json();
@@ -29,7 +30,7 @@ const App = () => {
           if (counter < range * 2 && details.length < range)
             setCounter(counter + 1);
           fetch(
-            `https://musicbrainz.org/ws/2/recording?query=${data[0].word}&fmt=json&limit=1`
+            `https://musicbrainz.org/ws/2/recording?query=${data[0]}&fmt=json&limit=1`
           )
             .then((musicRes) => musicRes.json())
             .then((musicData) => {
@@ -38,7 +39,7 @@ const App = () => {
               const album = newData?.releases[0].title;
               const title = newData?.title;
               if (details.length < range && range <= 20) {
-                details.push({ word: data[0].word, artist, album, title });
+                setDetails([...details, {word: data[0], artist, album, title}]);
                 setLoading(true);
               } else if (details.length == range) setLoading(false);
             });
@@ -47,7 +48,7 @@ const App = () => {
     } else {
       setError("Input not within the range");
     }
-  }, [range, counter]);
+  }, [range, counter, details]);
 
   useEffect(() => {
     setDetails([]);
